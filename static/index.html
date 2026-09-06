@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kivi - The Words Kivi Keeps</title>
+<style>
+  :root {
+    --bg:#0f1117; --panel:#171a23; --panel2:#1e2230; --line:#2a2f40;
+    --text:#e8eaf0; --muted:#9aa0b4; --accent:#7c6cf0; --teal:#4ecdc4;
+    --good:#3ecf6e; --warn:#e0b45c; --bad:#e05c5c;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+       background:var(--bg);color:var(--text);padding:28px 24px;max-width:1180px;margin:0 auto}
+  h1{font-size:22px}
+  h1 span{color:var(--accent)}
+  .sub{color:var(--muted);font-size:13px;margin:6px 0 22px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .panel h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);
+            margin-bottom:14px}
+  label{display:block;font-size:12px;color:var(--muted);margin:12px 0 4px}
+  textarea,input,select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--line);
+       border-radius:9px;padding:10px 12px;font-size:14px;font-family:inherit}
+  textarea{min-height:58px;resize:vertical}
+  button{background:var(--accent);color:#fff;border:none;border-radius:9px;padding:10px 16px;
+         font-size:14px;font-weight:600;cursor:pointer;margin-top:14px;width:100%}
+  button:hover{filter:brightness(1.12)}
+  button.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:500}
+  button.danger{background:#4a2029}
+  .row{display:flex;gap:10px}.row>*{flex:1}
+  .out{background:var(--panel2);border:1px solid var(--line);border-radius:9px;padding:12px;
+       margin-top:12px;font-size:14px;white-space:pre-wrap;line-height:1.5}
+  .decision{border-left:3px solid var(--muted);padding:8px 12px;margin-top:8px;background:var(--panel2);
+            border-radius:6px;font-size:12.5px;color:var(--muted)}
+  .decision.rewrite{border-color:var(--good)}
+  .decision.abstain{border-color:var(--warn)}
+  .tag{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;padding:2px 6px;
+       border-radius:4px;margin-right:6px}
+  .tag.rewrite{background:#1d3a28;color:var(--good)}
+  .tag.abstain{background:#3a301d;color:var(--warn)}
+  .card{background:var(--panel2);border-radius:9px;padding:10px 12px;margin-bottom:8px;font-size:13px}
+  .w{font-weight:600;font-size:15px}
+  .pill{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10.5px;margin-left:8px;
+        font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .pill.confirmed{background:#1d3a28;color:var(--good)}
+  .pill.candidate{background:#2c3040;color:var(--muted)}
+  .pill.needs_review{background:#3a301d;color:var(--warn)}
+  .pill.suppressed{background:#3a2020;color:var(--bad)}
+  .meta{color:var(--muted);font-size:12px;margin-top:3px;line-height:1.5}
+  .hint{color:var(--muted);font-size:12.5px;line-height:1.55;margin-top:6px}
+  .toast{position:fixed;bottom:20px;right:20px;background:var(--accent);padding:12px 18px;
+         border-radius:9px;font-size:14px;display:none;max-width:340px}
+  .stats{font-size:12px;color:var(--muted);margin-top:8px}
+  #events{max-height:230px;overflow:auto}
+  b.rw{color:var(--good)} b.ab{color:var(--warn)}
+</style>
+</head>
+<body>
+  <h1>Kivi &mdash; <i>The Words Kivi Keeps</i></h1>
+  <div class="sub">Word-level phonetic memory: teach Kivi a word, watch it recognise that word in new
+  speech, and inspect <b>why</b> it intervened or deliberately abstained.</div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>1 &middot; Provide an observation</h2>
+      <label>ASR output (raw)</label>
+      <textarea id="obs-asr">ask aditya to review the sarvam kiwi service</textarea>
+      <label>Formatted output (after Kivi's language model)</label>
+      <textarea id="obs-fmt">Ask Aditya to review the Sarvam Kiwi service.</textarea>
+      <div class="row">
+        <div><label>Selection (wrong span)</label><input id="obs-sel" value="Aditya"></div>
+        <div><label>Replacement (what the user wrote)</label><input id="obs-rep" value="Aaditya"></div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Observation kind</label>
+          <select id="obs-kind">
+            <option value="correction">correction &mdash; user fixed the transcript</option>
+            <option value="confirm">confirm &mdash; user approved the span</option>
+            <option value="edit">edit &mdash; user edited a different span</option>
+            <option value="delete">delete &mdash; remove word from memory</option>
+          </select>
+        </div>
+        <div>
+          <label>Evidence weight (advanced)</label>
+          <input id="obs-weight" type="number" value="1" min="1" max="5">
+        </div>
+      </div>
+      <button onclick="observe()">Teach Kivi</button>
+      <div class="out" id="obs-out" style="display:none"></div>
+      <p class="hint">A first correction stores a <b>candidate</b> (never rewrites). A second sighting
+      confirms it. Only confirmed words intervene &mdash; see the memory panel.</p>
+    </div>
+
+    <div class="panel">
+      <h2>2 &middot; Memory state</h2>
+      <div id="memory"></div>
+      <div class="row">
+        <button class="ghost" onclick="loadMemory()">Refresh</button>
+        <button class="ghost" onclick="seedDemo()">Load seed data</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h2>3 &middot; New speech &rarr; memory-aware output</h2>
+      <label>Formatted output to process</label>
+      <textarea id="rw-in">Ask Aditya to review the Sarvam Kiwi service.</textarea>
+      <label>ASR output (optional, extra evidence)</label>
+      <textarea id="rw-asr" style="min-height:38px"></textarea>
+      <button onclick="rewrite()">Make it memory-aware</button>
+      <div class="out" id="rw-out" style="display:none"></div>
+      <div id="rw-decisions"></div>
+      <div class="stats" id="rw-stats"></div>
+    </div>
+
+    <div class="panel">
+      <h2>4 &middot; Reset &middot; replay &middot; audit</h2>
+      <p class="hint">Reset drops every word, form, context, event and statistic, re-creating the schema
+      from <code>db/schema.sql</code>. Then replay the journey: teach, inspect, rewrite, abstain.</p>
+      <div class="row">
+        <button class="ghost" onclick="seedDemo()">Load demo journey</button>
+        <button class="danger" onclick="resetSystem()">Reset memory</button>
+      </div>
+      <h2 style="margin-top:20px">Audit trail (last events)</h2>
+      <div id="events"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+
+function toast(msg, ok=true) {
+  const t = $('toast');
+  t.textContent = msg; t.style.display = 'block';
+  t.style.background = ok ? 'var(--accent)' : 'var(--bad)';
+  setTimeout(() => t.style.display = 'none', 3000);
+}
+
+async function api(path, body, method='POST') {
+  const res = await fetch(path, {method, headers: {'Content-Type': 'application/json'},
+                                 body: body ? JSON.stringify(body) : undefined});
+  return res.json();
+}
+
+async function observe() {
+  const out = await api('/api/observe', {
+    kind: $('obs-kind').value,
+    asr: $('obs-asr').value,
+    formatted: $('obs-fmt').value,
+    selection: $('obs-sel').value,
+    replacement: $('obs-rep').value,
+    weight: parseInt($('obs-weight') ? $('obs-weight').value : '1'),
+  });
+  const el = $('obs-out');
+  el.style.display = 'block';
+  el.innerHTML = out.accepted
+    ? `learned <b>${out.word}</b> &rarr; <code>${out.status}</code> &mdash; ${out.reason}`
+    : `<span style="color:var(--warn)">not learned:</span> ${out.reason}`;
+  loadMemory(); loadEvents();
+}
+
+async function rewrite() {
+  const out = await api('/api/rewrite', {formatted: $('rw-in').value, asr: $('rw-asr').value});
+  const el = $('rw-out');
+  el.style.display = 'block';
+  el.textContent = out.text;
+  const dec = $('rw-decisions'); dec.innerHTML = '';
+  const decisions = out.decisions || [];
+  if (!decisions.length) {
+    dec.innerHTML = '<div class="decision"><span class="tag abstain">abstain</span> no span resembled a confirmed word</div>';
+  }
+  decisions.forEach(d => {
+    const div = document.createElement('div');
+    div.className = `decision ${d.action}`;
+    const arrow = d.action === 'rewrite' ? `<b class="rw">${d.original}</b> &rarr; <b class="rw">${d.replacement}</b>`
+                                         : `<b class="ab">${d.original}</b> untouched`;
+    div.innerHTML = `<span class="tag ${d.action}">${d.action}</span> ${arrow}<br>${d.reason}`;
+    dec.appendChild(div);
+  });
+  $('rw-stats').textContent = `latency ${out.latency_ms} ms - db ${out.db_bytes} bytes`;
+}
+
+async function loadMemory() {
+  const mem = await api('/api/memory', null, 'GET');
+  const el = $('memory');
+  if (!mem.words.length) {
+    el.innerHTML = '<div class="hint">Empty. Provide an observation or load the demo journey.</div>';
+    return;
+  }
+  el.innerHTML = mem.words.map(w => `
+    <div class="card">
+      <span class="w">${w.display}</span>
+      <span class="pill ${w.status}">${w.status}</span>
+      <span class="pill candidate" style="background:#22263a;color:var(--muted)">${w.pos}</span>
+      <div class="meta">seen ${w.occurrences}&times; - rewrote ${w.interventions}&times;
+      ${w.forms.length ? '<br>forms: ' + w.forms.map(f=>f.form).join(', ') : ''}
+      ${w.contexts.length ? '<br>context: ' + w.contexts.map(c=>c.context).join(' | ') : ''}</div>
+      <div class="row" style="margin-top:8px">
+        ${w.status !== 'suppressed'
+          ? `<button class="ghost" onclick="suppress('${w.word}')">Suppress</button>`
+          : `<button class="ghost" onclick="unsuppress('${w.word}')">Re-enable</button>`}
+        <button class="ghost" onclick="forget('${w.word}')">Forget</button>
+      </div>
+    </div>`).join('');
+}
+
+async function suppress(word) {
+  await api('/api/suppress', {word});
+  toast(`${word} suppressed - never rewritten`);
+  loadMemory(); loadEvents();
+}
+
+async function unsuppress(word) {
+  await api('/api/observe', {kind: 'confirm', selection: word, weight: 2});
+  toast(`${word} re-confirmed`);
+  loadMemory(); loadEvents();
+}
+
+async function forget(word) {
+  await api('/api/delete', {word});
+  toast(`${word} forgotten`);
+  loadMemory(); loadEvents();
+}
+
+async function loadEvents() {
+  const evs = await api('/api/events?limit=25', null, 'GET');
+  $('events').innerHTML = evs.map(e =>
+    `<div class="card"><b>${e.kind}</b> <span class="meta">${e.at}</span>
+     <div class="meta">${JSON.stringify(e.payload).slice(0,150)}</div></div>`
+  ).join('') || '<div class="hint">no events yet</div>';
+}
+
+async function seedDemo() {
+  const out = await api('/api/seed', {});
+  toast(`Loaded ${out.seeded} seed observations`);
+  loadMemory(); loadEvents();
+}
+
+async function resetSystem() {
+  if (!confirm('Erase all learned words and start over?')) return;
+  const out = await api('/api/reset', {confirm: true});
+  toast(out.reset ? 'Memory reset' : 'Reset refused', out.reset);
+  loadMemory(); loadEvents();
+}
+
+loadMemory(); loadEvents();
+</script>
+</body>
+</html>

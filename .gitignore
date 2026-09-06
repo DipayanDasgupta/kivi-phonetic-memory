@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+db/kivi.db
+db/kivi.db-wal
+db/kivi.db-shm
+.venv/
+venv/

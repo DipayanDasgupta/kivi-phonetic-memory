@@ -1,0 +1,754 @@
+{
+  "summary": {
+    "total_cases": 16,
+    "passed": 16,
+    "failed": 0,
+    "pass_rate": 1.0,
+    "useful_interventions": 8,
+    "unnecessary_or_incorrect_interventions": 0,
+    "correct_deliberate_abstentions": 8,
+    "avg_latency_ms": 12.864,
+    "max_latency_ms": 32.807,
+    "db_bytes_after_eval": 271280,
+    "model_usage": "none - phonetic matching is fully local; the memory layer makes no LLM calls",
+    "cost": "0 API calls, 0 tokens; local compute only",
+    "note": "A failed case means the engine disagreed with the declared expectation; every case's inputs, decisions and reasons are recorded below."
+  },
+  "cases": [
+    {
+      "case_id": "P1_brief_example",
+      "group": "positive",
+      "inputs": {
+        "asr": "ask aditya to review the sarvam kiwi service",
+        "formatted": "Ask Aditya to review the Sarvam Kiwi service."
+      },
+      "expected_text": "Ask Aaditya to review the Sarvam Kivi service.",
+      "actual_text": "Ask Aaditya to review the Sarvam Kivi service.",
+      "passed": true,
+      "expected_actions": {
+        "Aditya": "rewrite",
+        "Kiwi": "rewrite"
+      },
+      "actual_actions": {
+        "Kiwi": "rewrite",
+        "Aditya": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 32,
+          "end": 36,
+          "original": "Kiwi",
+          "replacement": "Kivi",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'kivi' (sim 0.82, context +0.15)",
+          "matched_word": "kivi",
+          "similarity": 0.825,
+          "context_support": 0.15
+        },
+        {
+          "start": 4,
+          "end": 10,
+          "original": "Aditya",
+          "replacement": "Aaditya",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'aaditya' (sim 0.90, context +0.05)",
+          "matched_word": "aaditya",
+          "similarity": 0.8999999999999999,
+          "context_support": 0.05
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "aaditya",
+            "display": "Aaditya",
+            "status": "confirmed",
+            "occurrences": 2,
+            "interventions": 1,
+            "forms": [
+              "aaditya",
+              "aditya"
+            ],
+            "contexts": [
+              "deploy",
+              "ping <word>",
+              "sarvam",
+              "slack"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 13.73,
+      "db_bytes": 695640,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "P2_new_sentence_same_words",
+      "group": "positive",
+      "inputs": {
+        "asr": "",
+        "formatted": "Ping Aditya about the Sarvam Kiwi launch."
+      },
+      "expected_text": "Ping Aaditya about the Sarvam Kivi launch.",
+      "actual_text": "Ping Aaditya about the Sarvam Kivi launch.",
+      "passed": true,
+      "expected_actions": {
+        "Aditya": "rewrite",
+        "Kiwi": "rewrite"
+      },
+      "actual_actions": {
+        "Kiwi": "rewrite",
+        "Aditya": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 29,
+          "end": 33,
+          "original": "Kiwi",
+          "replacement": "Kivi",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'kivi' (sim 0.82, context +0.10)",
+          "matched_word": "kivi",
+          "similarity": 0.825,
+          "context_support": 0.1
+        },
+        {
+          "start": 5,
+          "end": 11,
+          "original": "Aditya",
+          "replacement": "Aaditya",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'aaditya' (sim 0.90, context +0.05)",
+          "matched_word": "aaditya",
+          "similarity": 0.8999999999999999,
+          "context_support": 0.05
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "aaditya",
+            "display": "Aaditya",
+            "status": "confirmed",
+            "occurrences": 2,
+            "interventions": 2,
+            "forms": [
+              "aaditya",
+              "aditya"
+            ],
+            "contexts": [
+              "deploy",
+              "ping <word>",
+              "sarvam",
+              "slack"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 27.769,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "P3_lowercase_input",
+      "group": "positive",
+      "inputs": {
+        "asr": "",
+        "formatted": "can you ask aditya to join the kiwi call"
+      },
+      "expected_text": "can you ask Aaditya to join the Kivi call",
+      "actual_text": "can you ask Aaditya to join the Kivi call",
+      "passed": true,
+      "expected_actions": {
+        "aditya": "rewrite",
+        "kiwi": "rewrite"
+      },
+      "actual_actions": {
+        "kiwi": "rewrite",
+        "aditya": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 31,
+          "end": 35,
+          "original": "kiwi",
+          "replacement": "Kivi",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'kivi' (sim 0.82, context +0.05)",
+          "matched_word": "kivi",
+          "similarity": 0.825,
+          "context_support": 0.05
+        },
+        {
+          "start": 12,
+          "end": 18,
+          "original": "aditya",
+          "replacement": "Aaditya",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'aaditya' (sim 0.90, context +0.00)",
+          "matched_word": "aaditya",
+          "similarity": 0.8999999999999999,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "aaditya",
+            "display": "Aaditya",
+            "status": "confirmed",
+            "occurrences": 2,
+            "interventions": 3,
+            "forms": [
+              "aaditya",
+              "aditya"
+            ],
+            "contexts": [
+              "deploy",
+              "ping <word>",
+              "sarvam",
+              "slack"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 32.807,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "P4_paneer_variant",
+      "group": "positive",
+      "inputs": {
+        "asr": "",
+        "formatted": "Order more panner for the team lunch."
+      },
+      "expected_text": "Order more paneer for the team lunch.",
+      "actual_text": "Order more paneer for the team lunch.",
+      "passed": true,
+      "expected_actions": {
+        "panner": "rewrite"
+      },
+      "actual_actions": {
+        "panner": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 11,
+          "end": 17,
+          "original": "panner",
+          "replacement": "paneer",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'paneer' (sim 0.88, context +0.00)",
+          "matched_word": "paneer",
+          "similarity": 0.8833333333333333,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 8
+      },
+      "latency_ms": 20.799,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "P5_caps_input",
+      "group": "positive",
+      "inputs": {
+        "asr": "",
+        "formatted": "Review the ADITYA migration before Friday."
+      },
+      "expected_text": "Review the Aaditya migration before Friday.",
+      "actual_text": "Review the Aaditya migration before Friday.",
+      "passed": true,
+      "expected_actions": {
+        "ADITYA": "rewrite"
+      },
+      "actual_actions": {
+        "ADITYA": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 11,
+          "end": 17,
+          "original": "ADITYA",
+          "replacement": "Aaditya",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'aaditya' (sim 0.90, context +0.00)",
+          "matched_word": "aaditya",
+          "similarity": 0.8999999999999999,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "aaditya",
+            "display": "Aaditya",
+            "status": "confirmed",
+            "occurrences": 2,
+            "interventions": 4,
+            "forms": [
+              "aaditya",
+              "aditya"
+            ],
+            "contexts": [
+              "deploy",
+              "ping <word>",
+              "sarvam",
+              "slack"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 21.363,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "P6_casing_preference",
+      "group": "positive",
+      "inputs": {
+        "asr": "",
+        "formatted": "Email the urzoo team about pricing."
+      },
+      "expected_text": "Email the UrZoo team about pricing.",
+      "actual_text": "Email the UrZoo team about pricing.",
+      "passed": true,
+      "expected_actions": {
+        "urzoo": "rewrite"
+      },
+      "actual_actions": {
+        "urzoo": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 10,
+          "end": 15,
+          "original": "urzoo",
+          "replacement": "UrZoo",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'urzoo' (sim 1.00, context +0.00)",
+          "matched_word": "urzoo",
+          "similarity": 1.0,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "urzoo",
+            "display": "UrZoo",
+            "status": "confirmed",
+            "occurrences": 1,
+            "interventions": 1,
+            "forms": [
+              "urzoo"
+            ],
+            "contexts": [
+              "com",
+              "dot",
+              "veena"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 23.343,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "N1_unrelated_text",
+      "group": "negative",
+      "inputs": {
+        "asr": "",
+        "formatted": "The quick brown fox jumps over the lazy dog."
+      },
+      "expected_text": "The quick brown fox jumps over the lazy dog.",
+      "actual_text": "The quick brown fox jumps over the lazy dog.",
+      "passed": true,
+      "expected_actions": {},
+      "actual_actions": {},
+      "decisions": [],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 8
+      },
+      "latency_ms": 4.741,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "N2_similar_but_not_taught",
+      "group": "negative",
+      "inputs": {
+        "asr": "",
+        "formatted": "Ask Aditi to review the service."
+      },
+      "expected_text": "Ask Aditi to review the service.",
+      "actual_text": "Ask Aditi to review the service.",
+      "passed": true,
+      "expected_actions": {
+        "Aditi": "abstain"
+      },
+      "actual_actions": {
+        "Aditi": "abstain"
+      },
+      "decisions": [
+        {
+          "start": 4,
+          "end": 9,
+          "original": "Aditi",
+          "replacement": "aaditya",
+          "action": "abstain",
+          "reason": "similarity 0.70 below strong threshold 0.72 and context support 0.00 insufficient",
+          "matched_word": "aaditya",
+          "similarity": 0.7,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 8
+      },
+      "latency_ms": 4.567,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "N3_common_word_homophone_risk",
+      "group": "negative",
+      "inputs": {
+        "asr": "i like kiwi fruit in the morning",
+        "formatted": "I like kiwi fruit in the morning."
+      },
+      "expected_text": "I like kiwi fruit in the morning.",
+      "actual_text": "I like kiwi fruit in the morning.",
+      "passed": true,
+      "expected_actions": {
+        "kiwi": "abstain"
+      },
+      "actual_actions": {
+        "kiwi": "abstain"
+      },
+      "decisions": [
+        {
+          "start": 7,
+          "end": 11,
+          "original": "kiwi",
+          "replacement": "kivi",
+          "action": "abstain",
+          "reason": "real-word risk: 'kiwi' is a common word; rewriting to 'kivi' requires supporting context, which is absent",
+          "matched_word": "kivi",
+          "similarity": 0.825,
+          "context_support": 0.0
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "aaditya",
+            "display": "Aaditya",
+            "status": "confirmed",
+            "occurrences": 2,
+            "interventions": 4,
+            "forms": [
+              "aaditya",
+              "aditya"
+            ],
+            "contexts": [
+              "deploy",
+              "ping <word>",
+              "sarvam",
+              "slack"
+            ]
+          },
+          {
+            "word": "kivi",
+            "display": "Kivi",
+            "status": "confirmed",
+            "occurrences": 1,
+            "interventions": 3,
+            "forms": [
+              "kivi",
+              "kiwi"
+            ],
+            "contexts": [
+              "<word> service",
+              "aditya",
+              "sarvam"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 4.515,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "N4_candidate_not_yet_confirmed",
+      "group": "negative",
+      "inputs": {
+        "asr": "",
+        "formatted": "Ship the flurbo widget to production."
+      },
+      "expected_text": "Ship the flurbo widget to production.",
+      "actual_text": "Ship the flurbo widget to production.",
+      "passed": true,
+      "expected_actions": {},
+      "actual_actions": {},
+      "decisions": [],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "flurbo",
+            "display": "flurbo",
+            "status": "candidate",
+            "occurrences": 1,
+            "interventions": 0,
+            "forms": [
+              "flurbo"
+            ],
+            "contexts": []
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 7.956,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "B1_kiwi_with_service_context",
+      "group": "boundary",
+      "inputs": {
+        "asr": "",
+        "formatted": "The kiwi service is down."
+      },
+      "expected_text": "The Kivi service is down.",
+      "actual_text": "The Kivi service is down.",
+      "passed": true,
+      "expected_actions": {
+        "kiwi": "rewrite"
+      },
+      "actual_actions": {
+        "kiwi": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 4,
+          "end": 8,
+          "original": "kiwi",
+          "replacement": "Kivi",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'kivi' (sim 0.82, context +0.10)",
+          "matched_word": "kivi",
+          "similarity": 0.825,
+          "context_support": 0.1
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 8
+      },
+      "latency_ms": 17.954,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "B2_already_canonical",
+      "group": "boundary",
+      "inputs": {
+        "asr": "",
+        "formatted": "Buy paneer at the market."
+      },
+      "expected_text": "Buy paneer at the market.",
+      "actual_text": "Buy paneer at the market.",
+      "passed": true,
+      "expected_actions": {},
+      "actual_actions": {},
+      "decisions": [],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "paneer",
+            "display": "paneer",
+            "status": "confirmed",
+            "occurrences": 1,
+            "interventions": 1,
+            "forms": [
+              "paneer",
+              "panner"
+            ],
+            "contexts": [
+              "add",
+              "grocery",
+              "list"
+            ]
+          }
+        ],
+        "total_events": 8
+      },
+      "latency_ms": 3.965,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "L1_candidate_never_rewrites",
+      "group": "lifecycle",
+      "inputs": {
+        "asr": "",
+        "formatted": "Email Ananya about the Mehta invoice."
+      },
+      "expected_text": "Email Ananya about the Mehta invoice.",
+      "actual_text": "Email Ananya about the Mehta invoice.",
+      "passed": true,
+      "expected_actions": {},
+      "actual_actions": {},
+      "decisions": [],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 8
+      },
+      "latency_ms": 4.753,
+      "db_bytes": 81920,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "L2_confirmed_rewrites",
+      "group": "lifecycle",
+      "inputs": {
+        "asr": "",
+        "formatted": "Email Ananya about the Mehta invoice again."
+      },
+      "expected_text": "Email Ananya about the Mayhta invoice again.",
+      "actual_text": "Email Ananya about the Mayhta invoice again.",
+      "passed": true,
+      "expected_actions": {
+        "Mehta": "rewrite"
+      },
+      "actual_actions": {
+        "Mehta": "rewrite"
+      },
+      "decisions": [
+        {
+          "start": 23,
+          "end": 28,
+          "original": "Mehta",
+          "replacement": "Mayhta",
+          "action": "rewrite",
+          "reason": "phonetic match to confirmed word 'mayhta' (sim 0.77, context +0.10)",
+          "matched_word": "mayhta",
+          "similarity": 0.7666666666666666,
+          "context_support": 0.1
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 10
+      },
+      "latency_ms": 11.305,
+      "db_bytes": 160040,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "L3_user_override_pauses",
+      "group": "lifecycle",
+      "inputs": {
+        "asr": "",
+        "formatted": "File the Mehta report under M."
+      },
+      "expected_text": "File the Mehta report under M.",
+      "actual_text": "File the Mehta report under M.",
+      "passed": true,
+      "expected_actions": {
+        "Mehta": "abstain"
+      },
+      "actual_actions": {
+        "Mehta": "abstain"
+      },
+      "decisions": [
+        {
+          "start": 9,
+          "end": 14,
+          "original": "Mehta",
+          "replacement": null,
+          "action": "abstain",
+          "reason": "word is flagged needs_review after user override; rewriting paused",
+          "matched_word": null,
+          "similarity": null,
+          "context_support": null
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [
+          {
+            "word": "mayhta",
+            "display": "Mayhta",
+            "status": "needs_review",
+            "occurrences": 2,
+            "interventions": 1,
+            "forms": [
+              "mayhta",
+              "mehta"
+            ],
+            "contexts": [
+              "ananya",
+              "call <word>",
+              "invoice"
+            ]
+          }
+        ],
+        "total_events": 11
+      },
+      "latency_ms": 3.549,
+      "db_bytes": 176520,
+      "failure_reason": ""
+    },
+    {
+      "case_id": "L4_suppressed_word_never_rewritten",
+      "group": "lifecycle",
+      "inputs": {
+        "asr": "",
+        "formatted": "The Kiwi launch went well."
+      },
+      "expected_text": "The Kiwi launch went well.",
+      "actual_text": "The Kiwi launch went well.",
+      "passed": true,
+      "expected_actions": {
+        "Kiwi": "abstain"
+      },
+      "actual_actions": {
+        "Kiwi": "abstain"
+      },
+      "decisions": [
+        {
+          "start": 4,
+          "end": 8,
+          "original": "Kiwi",
+          "replacement": null,
+          "action": "abstain",
+          "reason": "word is suppressed by user; never rewritten",
+          "matched_word": null,
+          "similarity": null,
+          "context_support": null
+        }
+      ],
+      "memory_state_digest": {
+        "relevant_words": [],
+        "total_events": 13
+      },
+      "latency_ms": 2.701,
+      "db_bytes": 271280,
+      "failure_reason": ""
+    }
+  ]
+}
